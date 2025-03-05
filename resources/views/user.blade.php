@@ -15,6 +15,9 @@
                     <th class="border border-gray-300 px-4 py-2">Username</th>
                     <th class="border border-gray-300 px-4 py-2">Nama</th>
                     <th class="border border-gray-300 px-4 py-2">ID Level Pengguna</th>
+                    <th class="border border-gray-300 px-4 py-2">Kode level</th>
+                    <th class="border border-gray-300 px-4 py-2">Nama level</th>
+                    <th class="border border-gray-300 px-4 py-2">Aksi</th>
                 </tr>
             </thead>
             <tbody>
@@ -24,6 +27,20 @@
                         <td class="border border-gray-300 px-4 py-2 text-center">{{ $d->username }}</td>
                         <td class="border border-gray-300 px-4 py-2">{{ $d->nama }}</td>
                         <td class="border border-gray-300 px-4 py-2">{{ $d->level_id }}</td>
+                        <td class="border border-gray-300 px-4 py-2">{{ $d->level->level_kode }}</td>
+                        <td class="border border-gray-300 px-4 py-2">{{ $d->level->level_name }}</td>
+                        <td class="border border-gray-300 px-4 py-2 flex space-x-2">
+                            <a 
+                                href="/user/ubah/{{ $d->user_id }}" 
+                                class="px-4 py-2 text-white bg-blue-500 rounded-lg hover:bg-blue-600">
+                                Ubah
+                            </a>
+                            <a 
+                                href="/user/hapus/{{ $d->user_id }}"
+                                class="px-4 py-2 text-white bg-red-500 rounded-lg hover:bg-red-600">
+                                Hapus
+                            </a>
+                        </td>
                     </tr>
                 @endforeach
             </tbody>
