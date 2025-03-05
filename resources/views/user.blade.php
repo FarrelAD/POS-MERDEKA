@@ -18,12 +18,14 @@
                 </tr>
             </thead>
             <tbody>
-                <tr class="bg-white hover:bg-gray-100">
-                    <td class="border border-gray-300 px-4 py-2 text-center">{{ $data->user_id }}</td>
-                    <td class="border border-gray-300 px-4 py-2 text-center">{{ $data->username }}</td>
-                    <td class="border border-gray-300 px-4 py-2">{{ $data->nama }}</td>
-                    <td class="border border-gray-300 px-4 py-2">{{ $data->level_id }}</td>
-                </tr>
+                @foreach ($data as $d)
+                    <tr class="bg-white hover:bg-gray-100">
+                        <td class="border border-gray-300 px-4 py-2 text-center">{{ $d->user_id }}</td>
+                        <td class="border border-gray-300 px-4 py-2 text-center">{{ $d->username }}</td>
+                        <td class="border border-gray-300 px-4 py-2">{{ $d->nama }}</td>
+                        <td class="border border-gray-300 px-4 py-2">{{ $d->level_id }}</td>
+                    </tr>
+                @endforeach
             </tbody>
         </table>
     </div>
