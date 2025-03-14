@@ -15,7 +15,7 @@
                 </div>
                 <a href="{{ url('user') }}" class="btn btn-sm btn-default mt-2">Kembali</a>
             @else
-                <form action="{{ url('/user/'.$user->user_id) }}" method="post" class="form-control">
+                <form action="{{ url('/user/'.$user->user_id) }}" method="post" class="form-horizontal">
                     @csrf
                     {!! method_field('PUT') !!}
 
@@ -64,16 +64,17 @@
 
                             @error('level_id')
                                 <small class="form-text text-danger">{{ $message }}</small>
+                                <small class="form-text text-muted">Abaikan (jangan diisi) jika tidak ingin mengganti password user!</small>
                             @enderror
                         </div>
                     </div>
 
                     <div class="form-group row">
-                    <div class="col-11">
-                        <button type="submit" class="btn btn-primary btn-sm">Simpan</button>
-                        <a href="{{ url('user') }}" class="btn btn-sm btn-default ml-1">Kembali</a>
+                        <div class="col-11">
+                            <button type="submit" class="btn btn-primary btn-sm">Simpan</button>
+                            <a href="{{ url('user') }}" class="btn btn-sm btn-default ml-1">Kembali</a>
+                        </div>
                     </div>
-                </div>
                 </form>
             @endempty
         </div>
