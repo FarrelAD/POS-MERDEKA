@@ -15,7 +15,7 @@
                 </div>
                 <a href="{{ url('user') }}" class="btn btn-sm btn-default mt-2">Kembali</a>
             @else
-                <form action="{{ url('/user/'.$user->user->id) }}" method="post" class="form-control">
+                <form action="{{ url('/user/'.$user->user_id) }}" method="post" class="form-control">
                     @csrf
                     {!! method_field('PUT') !!}
 

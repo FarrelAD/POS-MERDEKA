@@ -37,7 +37,7 @@ class UserController extends Controller
         return DataTables::of($users)
             ->addIndexColumn()
             ->addColumn('aksi', function ($user) {
-                $userUrl = url('/user/{$user->user_id');
+                $userUrl = url("/user/{$user->user_id}");
                 $csrfField = csrf_field();
                 $methodField = method_field('DELETE');
 
@@ -125,7 +125,7 @@ class UserController extends Controller
     public function update(Request $req, string $id)
     {
         $req->validate([
-            'username' => 'required|string|min:3|unique:m_user,username,'.$id.',user_id',
+            'username' => "required|string|min:3|unique:m_user,username,$id,user_id",
             'nama' => 'required|string|max:100',
             'password' => 'nullable|min:5',
             'level_id' => 'required|integer'
@@ -146,7 +146,7 @@ class UserController extends Controller
     {
         $check = UserModel::find($id);
 
-        if ($check) {
+        if (!$check) {
             return redirect('/user')->with('error', 'Data user tidak ditemukan');
         }
 
