@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\LevelModel;
 use App\Models\UserModel;
 use Illuminate\Database\QueryException;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -18,6 +17,7 @@ class UserController extends Controller
                 'title' => 'Daftar user',
                 'list' => ['Home', 'User']
             ],
+            'level' => LevelModel::all(),
             'page' => (object) [
                 'title' => 'Daftar user yang terdaftar dalam sistem'
             ],
@@ -30,6 +30,10 @@ class UserController extends Controller
         $users = UserModel::select('user_id', 'username', 'nama', 'level_id')
             ->with('level');
 
+        if ($req->level_id) {
+            $users->where('level_id', $req->level_id);
+        }
+
         return DataTables::of($users)
             ->addIndexColumn()
             ->addColumn('aksi', function ($user) {
@@ -37,7 +41,7 @@ class UserController extends Controller
                 $csrfField = csrf_field();
                 $methodField = method_field('DELETE');
 
-                $btn = <<<HTML
+                return <<<HTML
                 <a href="{$userUrl}" class="btn btn-info btn-sm">Detail</a>
                 <a href="{$userUrl}/edit" class="btn btn-warning btn-sm">Edit</a>
                 <form action="{$userUrl}" method="post" class="d-inline-block">
@@ -47,13 +51,11 @@ class UserController extends Controller
                     <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Apakah Anda yakin menghapus data ini?')">Hapus</button>
                 </form>
                 HTML;
-
-                return $btn;
             })
             ->rawColumns(['aksi'])
             ->make(true);
     }
-
+    
     public function create()
     {
         return view('user.create', [

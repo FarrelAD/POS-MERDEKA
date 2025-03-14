@@ -18,6 +18,23 @@
                 <div class="alert alert-danger">{{ session('error') }}</div>
             @endif
 
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group row">
+                        <label class="col-1 control-label col-form-label">Filter:</label>
+                        <div class="col-3">
+                            <select name="level_id" id="level_id" class="form-control">
+                                <option value="">- Semua -</option>
+                                @foreach ($level as $item)
+                                    <option value="{{ $item->level_id }}">{{ $item->level_name }}</option>
+                                @endforeach
+                            </select>
+                            <small class="form-text text-muted">Level Pengguna</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <table id="table-user" class="table table-bordered table-striped table-hover table-sm">
                 <thead>
                     <tr>
@@ -44,7 +61,10 @@
             ajax: {
                 "url": "{{ url('user/list') }}",
                 "dataType": "json",
-                "type": "POST"
+                "type": "POST",
+                "data": (d) => {
+                    d.level_id = $('#level_id').val()
+                }
             },
             columns: [
                 {
@@ -66,12 +86,22 @@
                     searchable: true
                 },
                 {
-                    data: "level.level_nama",
+                    data: "level.level_name",
                     className: "text-center",
+                    orderable: false,
+                    searchable: false
+                },
+                {
+                    data: "aksi",
+                    className: "",
                     orderable: false,
                     searchable: false
                 }
             ]
+        });
+
+        $('#level_id').on('change', () => {
+            dataUser.ajax.reload();
         });
     });
 </script>
