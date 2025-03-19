@@ -5,7 +5,7 @@
         <div class="card-header">
             <h3 class="card-title">{{ $page->title }}</h3>
             <div class="card-tools">
-                <a href="{{ url('kategori/create') }}" class="btn btn-sm btn-primary mt-1">Tambah</a>
+                <a href="{{ url('barang/create') }}" class="btn btn-sm btn-primary mt-1">Tambah</a>
             </div>
         </div>
 
@@ -35,12 +35,15 @@
                 </div>
             </div>
 
-            <table id="table-kategori" class="table table-bordered table-striped table-hover table-sm">
+            <table id="table-barang" class="table table-bordered table-striped table-hover table-sm">
                 <thead>
                     <tr>
                         <th>ID</th>
-                        <th>Kode Kategori</th>
-                        <th>Nama Kategori</th>
+                        <th>Kategori</th>
+                        <th>Kode Barang</th>
+                        <th>Nama Barang</th>
+                        <th>Harga Beli</th>
+                        <th>Harga Jual</th>
                         <th>Aksi</th>
                     </tr>
                 </thead>
@@ -55,14 +58,14 @@
 @push('js')
 <script>
     $(document).ready(() => {
-        const dataKategori = $('#table-kategori').DataTable({
+        const dataBarang = $('#table-barang').DataTable({
             serverSide: true,
             ajax: {
-                "url": "{{ route('kategori.list') }}",
+                "url": "{{ route('barang.list') }}",
                 "dataType": "json",
                 "type": "POST",
                 "data": (d) => {
-                    d.kategori_id = $('#kategori_id').val()
+                    d.barang_id = $('#barang_id').val()
                 }
             },
             columns: [
@@ -73,13 +76,31 @@
                     searchable: false
                 },
                 {
-                    data: "kategori_kode",
+                    data: "kategori.kategori_nama",
                     className: "",
                     orderable: true,
                     searchable: true
                 },
                 {
-                    data: "kategori_nama",
+                    data: "barang_kode",
+                    className: "",
+                    orderable: true,
+                    searchable: true
+                },
+                {
+                    data: "barang_nama",
+                    className: "",
+                    orderable: true,
+                    searchable: true
+                },
+                {
+                    data: "harga_beli",
+                    className: "",
+                    orderable: true,
+                    searchable: true
+                },
+                {
+                    data: "harga_jual",
                     className: "",
                     orderable: true,
                     searchable: true
@@ -93,8 +114,8 @@
             ]
         });
 
-        $('#kategori_id').on('change', () => {
-            dataKategori.ajax.reload();
+        $('#barang_id').on('change', () => {
+            dataBarang.ajax.reload();
         });
     });
 </script>
