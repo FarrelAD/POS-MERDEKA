@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\LevelModel;
 use App\Models\UserModel;
 use Illuminate\Database\QueryException;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -71,6 +72,12 @@ class UserController extends Controller
         ]);
     }
 
+    public function createAjax()
+    {
+        return view('user.create-ajax')
+            ->with('levels', LevelModel::select('level_id', 'level_name')->get());
+    }
+
     public function store(Request $req)
     {
         $req->validate([
@@ -89,6 +96,35 @@ class UserController extends Controller
 
         return redirect('/user')
             ->with('success', 'Data user berhasil disimpan!');
+    }
+
+    public function storeAjax(Request $req)
+    {
+        if (!$req->ajax() && !$req->wantsJson()) {
+            redirect('/');
+        }
+        
+        $validator = Validator::make($req->all(), [
+            'level_id' => 'required|integer',
+            'username' => 'required|string|min:3|unique:m_user,username',
+            'nama' => 'required|string|max:100',
+            'password' => 'required|min:6'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Validasi Gagal',
+                'msgField' => $validator->errors()
+            ]);
+        }
+
+        UserModel::create($req->all());
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Data user berhasil disimpan'
+        ]);
     }
 
     public function show(string $id)
