@@ -16,7 +16,6 @@ class SupplierController extends Controller
                 'title' => 'Daftar supplier',
                 'list' => ['Home', 'supplier']
             ],
-            'supplier' => SupplierModel::all(),
             'page' => (object) [
                 'title' => 'Daftar supplier yang terdaftar dalam sistem'
             ],
@@ -26,7 +25,7 @@ class SupplierController extends Controller
 
     public function list(Request $req) 
     {
-        $supplier = SupplierModel::select( 'supplier_id', 'supplier_kode', 'supplier_name');
+        $supplier = SupplierModel::select( 'supplier_id', 'supplier_nama', 'kontak', 'alamat');
 
         if ($req->supplier_id) {
             $supplier->where('supplier_id', $req->supplier_id);
@@ -35,7 +34,7 @@ class SupplierController extends Controller
         return DataTables::of($supplier)
             ->addIndexColumn()
             ->addColumn('aksi', function ($supplier) {
-                $supplierUrl = url("/supplier/{$supplier->supplier_id}");
+                $supplierUrl = route('supplier.destroy', ['id' => $supplier->supplier_id]);
                 $csrfField = csrf_field();
                 $methodField = method_field('DELETE');
 
@@ -72,13 +71,15 @@ class SupplierController extends Controller
     public function store(Request $req)
     {
         $req->validate([
-            'supplier_kode' => "required|string|min:3|unique:m_supplier,supplier_kode",
-            'supplier_name' => 'required|string|max:100|unique:m_supplier,supplier_name'
+            'supplier_nama' => 'required|string|max:100',
+            'kontak' => 'required|string|max:20',
+            'alamat' => 'required|string|max:100'
         ]);
 
         SupplierModel::create([
-            'supplier_kode' => $req->supplier_kode,
-            'supplier_name' => $req->supplier_name
+            'supplier_nama' => $req->supplier_nama,
+            'kontak' => $req->kontak,
+            'alamat' => $req->alamat
         ]);
 
         return redirect('/supplier')
@@ -118,13 +119,15 @@ class SupplierController extends Controller
     public function update(Request $req, string $id)
     {
         $req->validate([
-            'supplier_kode' => "required|string|min:3|unique:m_supplier,supplier_kode,$id,supplier_id",
-            'supplier_name' => 'required|string|max:100'
+            'supplier_nama' => "required|string|min:5|max:100",
+            'kontak' => 'required|string|max:20',
+            'alamat' => 'required|string|max:100'
         ]);
 
         SupplierModel::find($id)->update([
-            'supplier_kode' => $req->supplier_kode,
-            'supplier_name' => $req->supplier_name
+            'supplier_nama' => $req->supplier_nama,
+            'kontak' => $req->kontak,
+            'alamat' => $req->alamat
         ]);
 
         return redirect('/supplier')

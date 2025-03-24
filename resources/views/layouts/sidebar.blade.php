@@ -60,7 +60,7 @@
         </a>
       </li>
       <li class="nav-item">
-        <a href="{{ route('supplier.index') }}" class="nav-link {{ $activeMenu == 'penjualan' ? 'active' : '' }}">
+        <a href="{{ route('supplier.index') }}" class="nav-link {{ $activeMenu == 'supplier' ? 'active' : '' }}">
           <i class="nav-icon fas fa-truck"></i>
           <p>Data Supplier</p>
         </a>
