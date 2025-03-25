@@ -7,6 +7,7 @@ use App\Models\UserModel;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Yajra\DataTables\Facades\DataTables;
 
 class UserController extends Controller
@@ -39,18 +40,24 @@ class UserController extends Controller
             ->addIndexColumn()
             ->addColumn('aksi', function ($user) {
                 $userUrl = url("/user/{$user->user_id}");
-                $csrfField = csrf_field();
-                $methodField = method_field('DELETE');
+                // $csrfField = csrf_field();
+                // $methodField = method_field('DELETE');
 
+                // return <<<HTML
+                // <a href="{$userUrl}" class="btn btn-info btn-sm">Detail</a>
+                // <a href="{$userUrl}/edit" class="btn btn-warning btn-sm">Edit</a>
+                // <form action="{$userUrl}" method="post" class="d-inline-block">
+                //     {$csrfField}
+                //     {$methodField}
+
+                //     <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Apakah Anda yakin menghapus data ini?')">Hapus</button>
+                // </form>
+                // HTML;
+                
                 return <<<HTML
-                <a href="{$userUrl}" class="btn btn-info btn-sm">Detail</a>
-                <a href="{$userUrl}/edit" class="btn btn-warning btn-sm">Edit</a>
-                <form action="{$userUrl}" method="post" class="d-inline-block">
-                    {$csrfField}
-                    {$methodField}
-
-                    <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Apakah Anda yakin menghapus data ini?')">Hapus</button>
-                </form>
+                <button onclick="modalAction('{$userUrl}/show_ajax')" class="btn btn-info btn-sm">Detail</button>
+                <button onclick="modalAction('{$userUrl}/edit_ajax')" class="btn btn-warning btn-sm">Edit</button>
+                <button onclick="modalAction('{$userUrl}/delete_ajax')" class="btn btn-danger btn-sm">Hapus</button>
                 HTML;
             })
             ->rawColumns(['aksi'])
@@ -158,6 +165,17 @@ class UserController extends Controller
         ]);
     }
 
+    public function editAjax(string $id)
+    {
+        $user = UserModel::find($id);
+        $levels = LevelModel::select('level_id', 'level_name')->get();
+
+        return view('user.edit-ajax', [
+            'user' => $user,
+            'levels' => $levels
+        ]);
+    }
+
     public function update(Request $req, string $id)
     {
         $req->validate([
@@ -176,6 +194,45 @@ class UserController extends Controller
 
         return redirect('/user')
             ->with('success', 'Data berhasil diubah');
+    }
+
+    public function updateAjax(Request $req, string $id)
+    {
+        if (!$req->ajax() && !$req->wantsJson()) {
+            return redirect('/');
+        }
+
+        $validator = Validator::make($req->all(), [
+            'level_id' => 'required|integer',
+            'username' => "required|max:20|unique:m_user,username,$id,user_id",
+            'nama' => 'required|max:100',
+            'password' => 'nullable|min:6|max:20'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Validasi gagal!',
+                'msgField' => $validator->errors()
+            ], Response::HTTP_BAD_REQUEST);
+        }
+
+        $user = UserModel::find($id);
+
+        if (!$user) {
+            return response()->json([
+                'message' => 'Data tidak ditemukan'
+            ], Response::HTTP_NOT_FOUND);
+        }
+
+        if (!$req->filled('password')) {
+            $req->request->remove('password');
+        }
+
+        $user->update($req->all());
+        return response()->json([
+            'message' => 'Data berhasil diupdate'
+        ], Response::HTTP_OK);
     }
 
     public function destroy(string $id)

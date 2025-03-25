@@ -77,7 +77,7 @@
         dataUser = $('#table-user').DataTable({
             serverSide: true,
             ajax: {
-                "url": "{{ url('user/list') }}",
+                "url": "{{ route('user.list') }}",
                 "dataType": "json",
                 "type": "POST",
                 "data": (d) => {
