@@ -39,25 +39,14 @@ class UserController extends Controller
         return DataTables::of($users)
             ->addIndexColumn()
             ->addColumn('aksi', function ($user) {
-                $userUrl = url("/user/{$user->user_id}");
-                // $csrfField = csrf_field();
-                // $methodField = method_field('DELETE');
-
-                // return <<<HTML
-                // <a href="{$userUrl}" class="btn btn-info btn-sm">Detail</a>
-                // <a href="{$userUrl}/edit" class="btn btn-warning btn-sm">Edit</a>
-                // <form action="{$userUrl}" method="post" class="d-inline-block">
-                //     {$csrfField}
-                //     {$methodField}
-
-                //     <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Apakah Anda yakin menghapus data ini?')">Hapus</button>
-                // </form>
-                // HTML;
+                $detailUrl = route('user.show', ['id' => $user->user_id]);
+                $editUrl = route('user.edit-ajax', ['id' => $user->user_id]);
+                $deleteAjax = route('user.delete-ajax', ['id' => $user->user_id]);
                 
                 return <<<HTML
-                <button onclick="modalAction('{$userUrl}/show_ajax')" class="btn btn-info btn-sm">Detail</button>
-                <button onclick="modalAction('{$userUrl}/edit_ajax')" class="btn btn-warning btn-sm">Edit</button>
-                <button onclick="modalAction('{$userUrl}/delete_ajax')" class="btn btn-danger btn-sm">Hapus</button>
+                <button onclick="modalAction('{$detailUrl}')" class="btn btn-info btn-sm">Detail</button>
+                <button onclick="modalAction('{$editUrl}')" class="btn btn-warning btn-sm">Edit</button>
+                <button onclick="modalAction('{$deleteAjax}')" class="btn btn-danger btn-sm">Hapus</button>
                 HTML;
             })
             ->rawColumns(['aksi'])
@@ -120,18 +109,16 @@ class UserController extends Controller
 
         if ($validator->fails()) {
             return response()->json([
-                'status' => false,
                 'message' => 'Validasi Gagal',
                 'msgField' => $validator->errors()
-            ]);
+            ], Response::HTTP_BAD_REQUEST);
         }
 
         UserModel::create($req->all());
 
         return response()->json([
-            'status' => true,
             'message' => 'Data user berhasil disimpan'
-        ]);
+        ], Response::HTTP_OK);
     }
 
     public function show(string $id)
@@ -211,7 +198,6 @@ class UserController extends Controller
 
         if ($validator->fails()) {
             return response()->json([
-                'status' => false,
                 'message' => 'Validasi gagal!',
                 'msgField' => $validator->errors()
             ], Response::HTTP_BAD_REQUEST);
@@ -252,5 +238,32 @@ class UserController extends Controller
             return redirect('/user')
                 ->with('error', 'Data user gagal dihapus karena masih terdapat tabel lain yang terkait dengan data ini');
         }
+    }
+
+    public function confirmDeleteAjax(string $id)
+    {
+        $user = UserModel::find($id);
+
+        return view('user.confirm-delete-ajax', ['user' => $user]);
+    }
+
+    public function deleteAjax(Request $req, string $id)
+    {
+        if (!$req->ajax() && !$req->wantsJson()) {
+            return redirect('/');
+        }
+
+        $user = UserModel::find($id);
+
+        if (!$user) {
+            return response()->json([
+                'message' => 'Data tidak ditemukan'
+            ], Response::HTTP_NOT_FOUND);
+        }
+
+        $user->delete();
+        return response()->json([
+            'message' => 'Data berhasil dihapus!'
+        ], Response::HTTP_OK);
     }
 }

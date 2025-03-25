@@ -37,6 +37,10 @@ Route::group(['prefix' => 'user'], function () {
         ->name('user.update-ajax');
     Route::delete('/{id}', [UserController::class, 'destroy'])
         ->name('user.destroy');
+    Route::get('/{id}/delete-ajax', [UserController::class, 'confirmDeleteAjax'])
+        ->name('user.confirm-delete-ajax');
+    Route::delete('/{id}/delete-ajax', [UserController::class, 'deleteAjax'])
+        ->name('user.delete-ajax');
 });
 
 // Level

@@ -1,5 +1,5 @@
 @empty($user)
-    <div id="modal-master" class="modal-dialog modal-lg" role="document">
+<div id="modal-master" class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">Kesalahan!</h5>
@@ -18,53 +18,46 @@
         </div>
     </div>
 @else
-    <form id="form-edit" action="{{ route('user.update-ajax', ['id' => $user->user_id]) }}" method="post">
+    <form id="form-delete" action="{{ route('user.delete-ajax', ['id' => $user->user_id]) }}" method="post">
         @csrf
-        @method('PUT')
+        @method('DELETE')
 
         <div id="modal-master" class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Edit Data Pengguna</h5>
+                    <h5 class="modal-title">Hapus Data Pengguna</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
 
                 <div class="modal-body">
-                    <div class="form-group">
-                        <label for="level_id">Level Pengguna</label>
-                        <select name="level_id" id="level_id" class="form-control">
-                            <option value="">- Pilih Level -</option>
-                            @foreach ($levels as $level)
-                                <option value="{{ $level->level_id }}" {{ $level->level_id == $user->level_id ? 'selected' : '' }}>{{ $level->level_name }}</option>
-                            @endforeach
-                        </select>
-                        <small id="error-level-id" class="error-text form-text text-danger"></small>
+                    <div class="alert alert-warning">
+                        <h5><i class="icon fas fa-ban"></i> Konfirmasi !!!</h5>
+                        Apakah Anda ingin menghapus data seperti di bawah ini ?
                     </div>
 
-                    <div class="form-group">
-                        <label for="username">Username</label>
-                        <input type="text" name="username" id="username" required value="{{ $user->username }}" class="form-control">
-                        <small id="error-username" class="error-text form-text text-danger"></small>
-                    </div>
+                    <table class="table table-sm table-bordered table-striped">
+                        <tr>
+                            <th class="text-right col-3">Level Pengguna</th>
+                            <td class="col-9">{{ $user->level->level_name }}</td>
+                        </tr>
 
-                    <div class="form-group">
-                        <label for="nama">Nama</label>
-                        <input type="text" name="nama" id="nama" required value="{{ $user->nama }}" class="form-control">
-                        <small id="error-nama" class="error-text form-text text-danger"></small>
-                    </div>
+                        <tr>
+                            <th class="text-right col-3">Username</th>
+                            <td class="col-9">{{ $user->username }}</td>
+                        </tr>
 
-                    <div class="form-group">
-                        <label for="password">Password</label>
-                        <input type="password" name="password" id="password" class="form-control">
-                        <small id="error-password" class="error-text form-text text-danger"></small>
-                    </div>
+                        <tr>
+                            <th class="text-right col-3">Nama</th>
+                            <td class="col-9">{{ $user->nama }}</td>
+                        </tr>
+                    </table>
                 </div>
 
                 <div class="modal-footer">
                     <button type="button" data-dismiss="modal" class="btn btn-warning">Batal</button>
-                    <button type="submit" class="btn btn-primary">Simpan</button>
+                    <button type="submit" class="btn btn-primary">Ya, Hapus</button>
                 </div>
             </div>
         </div>
@@ -72,13 +65,8 @@
 
     <script>
         $(document).ready(function() {
-            $('#form-edit').validate({
-                rules: {
-                    level_id: { required: true, number: true },
-                    username: { required: true, minlength: 3, maxlength: 20 },
-                    nama: { required: true, minlength: 3, maxlength: 100 },
-                    password: { minlength: 6, maxlength: 20 }
-                },
+            $('#form-delete').validate({
+                rules: {},
                 submitHandler: function(form) {
                     $.ajax({
                         url: form.action,
@@ -125,7 +113,7 @@
                 unhighlight: (element, errorClass, validClass) => {
                     $(element).removeClass('is-invalid');
                 }
-            });
+            })
         });
     </script>
 @endempty
