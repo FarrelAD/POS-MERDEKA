@@ -5,7 +5,8 @@
         <div class="card-header">
             <h3 class="card-title">{{ $page->title }}</h3>
             <div class="card-tools">
-                <a href="{{ url('level/create') }}" class="btn btn-sm btn-primary mt-1">Tambah</a>
+                <a href="{{ route('level.create') }}" class="btn btn-sm btn-primary mt-1">Tambah</a>
+                <button onclick="modalAction('{{ route('level.create-ajax') }}')" class="btn btn-sm btn-success mt-1">Tambah Ajax</button>
             </div>
         </div>
 
@@ -47,15 +48,29 @@
             </table>
         </div>
     </div>
-@endsection
 
-@push('css')
-@endpush
+    <div 
+        id="myModal" 
+        class="modal fade animate shake" 
+        tabindex="-1" role="dialog" 
+        data-backdrop="static" 
+        data-keyboard="false" 
+        data-width="75%" 
+        aria-hidden="true">
+    </div>
+@endsection
 
 @push('js')
 <script>
+    function modalAction(url) {
+        $('#myModal').load(url, function() {
+            $('#myModal').modal('show');
+        });
+    }
+
+    let dataLevel;
     $(document).ready(() => {
-        const dataLevel = $('#table-level').DataTable({
+        dataLevel = $('#table-level').DataTable({
             serverSide: true,
             ajax: {
                 "url": "{{ route('level.list') }}",
