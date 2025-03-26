@@ -1,16 +1,16 @@
-@extends('layouts.template')
+<form id="form-tambah" action="{{ route('barang.store-ajax') }}" method="post">
+    @csrf
 
-@section('content')
-    <div class="card card-outline card-primary">
-        <div class="card-header">
-            <h3 class="card-title">{{ $page->title }}</h3>
-            <div class="card-tools"></div>
-        </div>
+    <div id="modal-master" class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 id="exampleModalLabel" class="modal-title">Tambah Data Barang</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
 
-        <div class="card-body">
-            <form action="{{ url('barang') }}" method="post">
-                @csrf
-
+            <div class="modal-body">
                 <div class="form-group row">
                     <label class="col-1 control-label col-form-label">Kategori</label>
                     <div class="col-11">
@@ -88,15 +88,73 @@
                         @enderror
                     </div>
                 </div>
+            </div>
 
-                <div class="form-group row">
-                    <div class="col-11">
-                        <button type="submit" class="btn btn-primary btn-sm">Simpan</button>
-                        <a href="{{ url('barang') }}" class="btn btn-sm btn-default ml-1">Kembali</a>
-                    </div>
-                </div>
-            </form>
+            <div class="modal-footer">
+                <button type="button" data-dismiss="modal" class="btn btn-warning">Batal</button>
+                <button type="submit" class="btn btn-primary btn-sm">Simpan</button>
+            </div>
         </div>
     </div>
+</form>
 
-@endsection
+<script>
+    $(document).ready(function () {
+        $('#form-tambah').validate({
+            rules: {
+                kategori_id: { required: true, number: true },
+                barang_kode: { required: true, minlength: 3, maxlength: 10 },
+                barang_nama: { required: true, minlength: 5, maxlength: 100 },
+                supplier_id: { required: true,  number: true },
+                harga_beli: { required: true, number: true },
+                harga_jual: { required: true, number: true },
+            },
+            submitHandler: function (form) {
+                $.ajax({
+                    url: form.action,
+                    type: form.method,
+                    data: $(form).serialize(),
+                    success: function(res, textStatus, xhr) {
+                        if (xhr.status == 200) {
+                            $('#myModal').modal('hide');
+
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Berhasil',
+                                text: res.message
+                            });
+
+                            dataBarang.ajax.reload();
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Terjadi Kesalahan',
+                            text: xhr.responseJSON ? xhr.responseJSON.message : 'Terjadi kesalahan!'
+                        });
+
+                        if (xhr.responseJSON && xhr.responseJSON.msgField) {
+                            $('.error-text').text('');
+                            $.each(xhr.responseJSON.msgField, function(prefix, val) {
+                                $('#error-' + prefix).text(val[0]);
+                            });
+                        }
+                    }
+                });
+                return false;
+            },
+            errorElement: 'span',
+            errorPlacement: (error, element) => {
+                error.addClass('invalid-feedback');
+                element.closest('.form-group').append(error);
+            },
+            highlight: (element, errorClass, validClass) => {
+                $(element).addClass('is-invalid');
+            },
+            unhighlight: (element, errorClass, validClass) => {
+                $(element).removeClass('is-invalid');
+            }
+        });
+    });
+</script>

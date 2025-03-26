@@ -59,6 +59,25 @@
                     </div>
 
                     <div class="form-group row">
+                        <label class="col-1 control-label col-form-label">Supplier</label>
+                        <div class="col-11">
+                            <select name="supplier_id" id="supplier_id" class="form-control">
+                                <option value="">- Pilih Supplier -</option>
+
+                                @foreach ($suppliers as $supplier)
+                                    <option value="{{ $supplier->supplier_id }}" @if ($supplier->supplier_id == $barang->supplier_id)
+                                    selected
+                                    @endif>{{ $supplier->supplier_nama }}</option>
+                                @endforeach
+                            </select>
+
+                            @error('supplier_id')
+                                <small class="form-text text-danger">{{ $message }}</small>
+                            @enderror
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
                         <label class="col-1 control-label col-form-label">Harga Beli</label>
                         <div class="col-11">
                             <input type="text" class="form-control" id="harga_beli" name="harga_beli" value="{{ old('harga_beli', $barang->harga_beli) }}" required>
@@ -91,9 +110,3 @@
         </div>
     </div>
 @endsection
-
-@push('css')
-@endpush
-
-@push('js')
-@endpush

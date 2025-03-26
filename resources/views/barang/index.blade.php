@@ -5,7 +5,8 @@
         <div class="card-header">
             <h3 class="card-title">{{ $page->title }}</h3>
             <div class="card-tools">
-                <a href="{{ url('barang/create') }}" class="btn btn-sm btn-primary mt-1">Tambah</a>
+                <a href="{{ route('barang.create') }}" class="btn btn-sm btn-primary mt-1">Tambah</a>
+                <button onclick="modalAction('{{ route('barang.create-ajax') }}')" class="btn btn-sm btn-success mt-1">Tambah Ajax</button>
             </div>
         </div>
 
@@ -39,7 +40,6 @@
                 <thead>
                     <tr>
                         <th>ID</th>
-                        <th>Kategori</th>
                         <th>Kode Barang</th>
                         <th>Nama Barang</th>
                         <th>Harga Beli</th>
@@ -50,15 +50,29 @@
             </table>
         </div>
     </div>
-@endsection
 
-@push('css')
-@endpush
+    <div 
+        id="myModal" 
+        class="modal fade animate shake" 
+        tabindex="-1" role="dialog" 
+        data-backdrop="static" 
+        data-keyboard="false" 
+        data-width="75%" 
+        aria-hidden="true">
+    </div>
+@endsection
 
 @push('js')
 <script>
+    function modalAction(url) {
+        $('#myModal').load(url, function() {
+            $('#myModal').modal('show');
+        });
+    }
+
+    let dataBarang;
     $(document).ready(() => {
-        const dataBarang = $('#table-barang').DataTable({
+        dataBarang = $('#table-barang').DataTable({
             serverSide: true,
             ajax: {
                 "url": "{{ route('barang.list') }}",
@@ -74,12 +88,6 @@
                     className: "text-center",
                     orderable: false,
                     searchable: false
-                },
-                {
-                    data: "kategori.kategori_nama",
-                    className: "",
-                    orderable: true,
-                    searchable: true
                 },
                 {
                     data: "barang_kode",

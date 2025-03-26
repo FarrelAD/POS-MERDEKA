@@ -16,8 +16,12 @@
             @else
                 <table class="table table-bordered table-striped table-hover table-sm">
                     <tr>
-                        <th>ID Kategori</th>
-                        <td>{{ $barang->kategori_id }}</td>
+                        <th>Kategori</th>
+                        <td>{{ $barang->kategori->kategori_nama }}</td>
+                    </tr>
+                    <tr>
+                        <th>Supplier</th>
+                        <td>{{ $barang->supplier->supplier_nama }}</td>
                     </tr>
                     <tr>
                         <th>Nama</th>
@@ -37,9 +41,3 @@
         </div>
     </div>
 @endsection
-
-@push('css')
-@endpush
-
-@push('js')
-@endpush
