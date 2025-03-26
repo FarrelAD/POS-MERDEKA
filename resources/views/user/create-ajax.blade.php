@@ -62,31 +62,33 @@
                     url: form.action,
                     type: form.method,
                     data: $(form).serialize(),
-                    success: function(res) {
-                        if (res.status) {
-                            $('#myModal').modal('hide');
+                    success: function(res, textStatus, xhr) {
+                        $('#myModal').modal('hide');
 
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'Berhasil',
-                                text: res.message
-                            });
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Berhasil',
+                            text: res.message
+                        });
 
-                            dataUser.ajax.reload();
-                        } else {
+                        dataUser.ajax.reload();
+                    },
+                    error: function(xhr, status, error) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Terjadi Kesalahan',
+                            text: xhr.responseJSON ? xhr.responseJSON.message : 'Terjadi kesalahan!'
+                        });
+
+                        if (xhr.responseJSON && xhr.responseJSON.msgField) {
                             $('.error-text').text('');
-                            $.each(res.msgField, function(prefix, val) {
+                            $.each(xhr.responseJSON.msgField, function(prefix, val) {
                                 $('#error-' + prefix).text(val[0]);
                             });
-
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Terjadi Kesalahan',
-                                text: res.message
-                            });
                         }
-                    },
+                    }
                 });
+
                 return false;
             },
             errorElement: 'span',
