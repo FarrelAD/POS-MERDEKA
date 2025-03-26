@@ -15,7 +15,9 @@ Route::pattern('id', '[0-9]+');
 Route::controller(AuthController::class)->group(function () {
     Route::get('login', 'login')->name('login');
     Route::post('login', 'postLogin')->name('login.post');
-    Route::get('logout', 'logout')->middleware('auth')->name('logout');
+    Route::post('logout', 'logout')->middleware('auth')->name('logout');
+    Route::get('signup', 'showSignup')->name('signup');
+    Route::post('signup', 'postSignup')->name('signup.post');
 });
 
 Route::middleware(['auth'])
