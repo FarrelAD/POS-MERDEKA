@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\LevelModel;
-use App\Models\UserModel;
+use App\Models\User;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
@@ -29,7 +29,7 @@ class UserController extends Controller
 
     public function list(Request $req) 
     {
-        $users = UserModel::select('user_id', 'username', 'nama', 'level_id')
+        $users = User::select('user_id', 'username', 'nama', 'level_id')
             ->with('level');
 
         if ($req->level_id) {
@@ -83,7 +83,7 @@ class UserController extends Controller
             'level_id' => 'required|integer'
         ]);
 
-        UserModel::create([
+        User::create([
             'username' => $req->username,
             'nama' => $req->nama,
             'password' => bcrypt($req->password),
@@ -114,7 +114,7 @@ class UserController extends Controller
             ], Response::HTTP_BAD_REQUEST);
         }
 
-        UserModel::create($req->all());
+        User::create($req->all());
 
         return response()->json([
             'message' => 'Data user berhasil disimpan'
@@ -131,7 +131,7 @@ class UserController extends Controller
             'page' => (object) [
                 'title' => 'Detail user'
             ],
-            'user' => UserModel::with('level')->find($id),
+            'user' => User::with('level')->find($id),
             'activeMenu' => 'user'
         ]);
     }
@@ -146,7 +146,7 @@ class UserController extends Controller
             'page' => (object) [
                 'title' => 'Edit User'
             ],
-            'user' => UserModel::find($id),
+            'user' => User::find($id),
             'level' =>LevelModel::all(),
             'activeMenu' => 'user'
         ]);
@@ -154,7 +154,7 @@ class UserController extends Controller
 
     public function editAjax(string $id)
     {
-        $user = UserModel::find($id);
+        $user = User::find($id);
         $levels = LevelModel::select('level_id', 'level_name')->get();
 
         return view('user.edit-ajax', [
@@ -172,10 +172,10 @@ class UserController extends Controller
             'level_id' => 'required|integer'
         ]);
 
-        UserModel::find($id)->update([
+        User::find($id)->update([
             'username' => $req->username,
             'nama' => $req->nama,
-            'password' => $req->password ? bcrypt($req->password) : UserModel::find($id)->password,
+            'password' => $req->password ? bcrypt($req->password) : User::find($id)->password,
             'level_id' => $req->level_id
         ]);
 
@@ -203,7 +203,7 @@ class UserController extends Controller
             ], Response::HTTP_BAD_REQUEST);
         }
 
-        $user = UserModel::find($id);
+        $user = User::find($id);
 
         if (!$user) {
             return response()->json([
@@ -223,14 +223,14 @@ class UserController extends Controller
 
     public function destroy(string $id)
     {
-        $check = UserModel::find($id);
+        $check = User::find($id);
 
         if (!$check) {
             return redirect('/user')->with('error', 'Data user tidak ditemukan');
         }
 
         try {
-            UserModel::destroy($id);
+            User::destroy($id);
 
             return redirect('/user')
                 ->with('success', 'Data user berhasil dihapus!');
@@ -242,7 +242,7 @@ class UserController extends Controller
 
     public function confirmDeleteAjax(string $id)
     {
-        $user = UserModel::find($id);
+        $user = User::find($id);
 
         return view('user.confirm-delete-ajax', ['user' => $user]);
     }
@@ -253,7 +253,7 @@ class UserController extends Controller
             return redirect('/');
         }
 
-        $user = UserModel::find($id);
+        $user = User::find($id);
 
         if (!$user) {
             return response()->json([

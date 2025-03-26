@@ -28,6 +28,11 @@ class User extends Model implements Authenticatable
         return $this->belongsTo(LevelModel::class, 'level_id', 'level_id');
     }
 
+    public function getRole(): string
+    {
+        return $this->level->level_kode;
+    }
+
     public function getRoleName(): string
     {
         return $this->level->level_name;
