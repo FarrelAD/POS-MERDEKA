@@ -77,7 +77,7 @@
                                     text: res.message
                                 });
 
-                                dataUser.ajax.reload();
+                                dataLevel.ajax.reload();
                             }
                         },
                         error: function(xhr, status, error) {
