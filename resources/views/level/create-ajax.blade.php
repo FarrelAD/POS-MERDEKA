@@ -48,10 +48,8 @@
     $(document).ready(function () {
         $('#form-tambah').validate({
             rules: {
-                level_id: { required: true, number: true },
-                username: { required: true, minlength: 3, maxlength: 20 },
-                nama: { required: true, minlength: 3, maxlength: 100 },
-                password: { required: true, minlength: 6, maxlength: 20 }
+                level_kode: { required: true, minlength: 3, maxlength: 100 },
+                level_name: { required: true, minlength: 3, maxlength: 20 }
             },
             submitHandler: function (form) {
                 $.ajax({
