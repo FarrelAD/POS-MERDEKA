@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\BarangModel;
 use App\Models\KategoriModel;
 use App\Models\SupplierModel;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -396,5 +397,22 @@ class BarangController extends Controller
 
         $writer->save('php://output');
         exit;
+    }
+
+    public function exportPdf()
+    {
+        $barang = BarangModel::select('kategori_id', 'barang_kode', 'barang_nama', 'harga_beli', 'harga_jual')
+            ->orderBy('kategori_id')
+            ->with('kategori')
+            ->get();
+
+        $pdf = Pdf::loadView('barang.export_pdf', [ 'barang' => $barang ])
+                ->setPaper('A4', 'landscape')
+                ->setOption('isRemoteEnabled', true)
+                ->setOption('isHtml5ParserEnabled', true);
+        
+        $pdf->render();
+
+        return $pdf->stream('Data Barang ' . date('Y-m-d H-i-s') . '.pdf');
     }
 }

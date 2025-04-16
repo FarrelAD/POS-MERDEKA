@@ -104,10 +104,11 @@ Route::middleware(['auth'])
         Route::get('/{id}/delete-ajax', 'confirmDeleteAjax')->name('barang.confirm-delete-ajax');
         Route::delete('/{id}/delete-ajax', 'deleteAjax')->name('barang.delete-ajax');
 
-        Route::get('/import', 'import')->name('barang.import');
-        Route::post('/import', 'importData')->name('barang.import.post');
+        Route::get('/import/excel', 'import')->name('barang.import');
+        Route::post('/import/excel', 'importData')->name('barang.import.post');
 
-        Route::get('/export', 'exportExcel')->name('barang.export-excel');
+        Route::get('/export/excel', 'exportExcel')->name('barang.export.excel');
+        Route::get('/export/pdf', 'exportPdf')->name('barang.export.pdf');
     });
     
     // Supplier
