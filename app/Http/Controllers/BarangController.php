@@ -9,6 +9,7 @@ use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use Symfony\Component\HttpFoundation\Response;
 use Yajra\DataTables\DataTables;
 
@@ -342,5 +343,58 @@ class BarangController extends Controller
             'status' => true,
             'message' => 'Data berhasil diimport'
         ], Response::HTTP_OK);
+    }
+
+    public function exportExcel()
+    {
+        $barang = BarangModel::select('kategori_id', 'barang_kode', 'barang_nama', 'harga_beli', 'harga_jual')
+            ->orderBy('kategori_id')
+            ->with('kategori')
+            ->get();
+
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+
+        $sheet->setCellValue('A1', 'No')
+            ->setCellValue('B1', 'Kode Barang')
+            ->setCellValue('C1', 'Nama Barang')
+            ->setCellValue('D1', 'Harga Beli')
+            ->setCellValue('E1', 'Harga Jual')
+            ->setCellValue('F1', 'Kategori');
+        
+        $sheet->getStyle('A1:F1')->getFont()->setBold(true);
+
+        $no = 1;
+        $row = 2;
+
+        foreach ($barang as $key => $value) {
+            $sheet->setCellValue('A' . $row, $no++)
+                ->setCellValue('B' . $row, $value->barang_kode)
+                ->setCellValue('C' . $row, $value->barang_nama)
+                ->setCellValue('D' . $row, $value->harga_beli)
+                ->setCellValue('E' . $row, $value->harga_jual)
+                ->setCellValue('F' . $row, $value->kategori->kategori_nama);
+            $row++;
+        }
+        
+        foreach (range('A', 'F') as $columnID) {
+            $sheet->getColumnDimension($columnID)->setAutoSize(true);
+        }
+
+        $sheet->setTitle('Data Barang');
+        $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
+        $filename = 'Data Barang ' . date('Y-m-d H-i-s') . '.xlsx';
+
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment; filename="' . $filename . '"');
+        header('Cache-Control: max-age=0');
+        header('Cache-Control: max-age=1');
+        header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');
+        header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT');
+        header('Cache-Control: cache, must-revalidate');
+        header('Pragma: public');
+
+        $writer->save('php://output');
+        exit;
     }
 }

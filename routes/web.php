@@ -106,6 +106,8 @@ Route::middleware(['auth'])
 
         Route::get('/import', 'import')->name('barang.import');
         Route::post('/import', 'importData')->name('barang.import.post');
+
+        Route::get('/export', 'exportExcel')->name('barang.export-excel');
     });
     
     // Supplier
