@@ -103,6 +103,9 @@ Route::middleware(['auth'])
         Route::delete('/{id}', 'destroy')->name('barang.destroy');
         Route::get('/{id}/delete-ajax', 'confirmDeleteAjax')->name('barang.confirm-delete-ajax');
         Route::delete('/{id}/delete-ajax', 'deleteAjax')->name('barang.delete-ajax');
+
+        Route::get('/import', 'import')->name('barang.import');
+        Route::post('/import', 'importData')->name('barang.import.post');
     });
     
     // Supplier

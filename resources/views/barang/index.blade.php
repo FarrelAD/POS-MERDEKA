@@ -5,6 +5,7 @@
         <div class="card-header">
             <h3 class="card-title">{{ $page->title }}</h3>
             <div class="card-tools">
+                <button onclick="modalAction('{{ route('barang.import') }}')" class="btn btn-info">Import Barang</button>
                 <a href="{{ route('barang.create') }}" class="btn btn-sm btn-primary mt-1">Tambah</a>
                 <button onclick="modalAction('{{ route('barang.create-ajax') }}')" class="btn btn-sm btn-success mt-1">Tambah Ajax</button>
             </div>
@@ -86,36 +87,48 @@
                 {
                     data: "DT_RowIndex",
                     className: "text-center",
+                    width: "5%",
                     orderable: false,
                     searchable: false
                 },
                 {
                     data: "barang_kode",
                     className: "",
+                    width: "10%",
                     orderable: true,
                     searchable: true
                 },
                 {
                     data: "barang_nama",
                     className: "",
+                    width: "37%",
                     orderable: true,
                     searchable: true
                 },
                 {
                     data: "harga_beli",
                     className: "",
+                    width: "10%",
                     orderable: true,
-                    searchable: true
+                    searchable: true,
+                    render: function(data, type, row) {
+                        return new Intl.NumberFormat('id-ID').format(data);
+                    }
                 },
                 {
                     data: "harga_jual",
                     className: "",
+                    width: "10%",
                     orderable: true,
-                    searchable: true
+                    searchable: true,
+                    render: function(data, type, row) {
+                        return new Intl.NumberFormat('id-ID').format(data);
+                    }
                 },
                 {
                     data: "aksi",
                     className: "",
+                    width: "14%",
                     orderable: false,
                     searchable: false
                 }
@@ -124,6 +137,16 @@
 
         $('#barang_id').on('change', () => {
             dataBarang.ajax.reload();
+        });
+
+        $('#table-barang_filter input').unbind().on('keyup', function(e) {
+            if (e.keyCode == 13) {
+                dataBarang.search(this.value).draw();
+            }
+        });
+
+        $('.filter_kategori').on('change', function() {
+            dataBarang.ajax.draw();
         });
     });
 </script>

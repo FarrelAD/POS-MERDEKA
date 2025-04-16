@@ -8,6 +8,7 @@ use App\Models\SupplierModel;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use PhpOffice\PhpSpreadsheet\IOFactory;
 use Symfony\Component\HttpFoundation\Response;
 use Yajra\DataTables\DataTables;
 
@@ -274,6 +275,72 @@ class BarangController extends Controller
         $barang->delete();
         return response()->json([
             'message' => 'Data berhasil dihapus!'
+        ], Response::HTTP_OK);
+    }
+
+    public function import()
+    {
+        return view('barang.import');
+    }
+
+    public function importData(Request $req)
+    {
+        if (!$req->ajax() && !$req->wantsJson()) {
+            return redirect('/');
+        }
+
+        $rules = [
+            'file_barang' => ['required', 'mimes:xlsx', 'max:1024']
+        ];
+
+        $validator = Validator::make($req->all(), $rules);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => 'Validasi gagal',
+                'msgField' => $validator->errors()
+            ], Response::HTTP_BAD_REQUEST);
+        }
+
+        $file = $req->file('file_barang');
+
+        $reader = IOFactory::createReader('Xlsx');
+        $reader->setReadDataOnly(true);
+        $spreadsheet = $reader->load($file->getRealPath());
+        $sheet = $spreadsheet->getActiveSheet();
+
+        $data = $sheet->toArray(null, false, true, true);
+
+        $insert = [];
+        if (count($data) <= 1) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Tidak ada data yang diimport'
+            ], Response::HTTP_BAD_REQUEST);
+        }
+
+        foreach ($data as $row => $val) {
+            if ($row > 1) {
+                $insert[] = [
+                    'barang_kode' => $val['A'],
+                    'barang_nama' => $val['B'],
+                    'kategori_id' => $val['C'],
+                    'supplier_id' => $val['D'],
+                    'harga_beli' => $val['E'],
+                    'harga_jual' => $val['F'],
+                    'created_at' => now(),
+                    'updated_at' => now()
+                ];
+            }
+        }
+
+        if (count($insert) > 0) {
+            BarangModel::insertOrIgnore($insert);
+        }
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Data berhasil diimport'
         ], Response::HTTP_OK);
     }
 }
