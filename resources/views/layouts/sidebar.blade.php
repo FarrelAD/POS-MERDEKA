@@ -33,19 +33,27 @@
           </p>
         </a>
       </li>
-      <li class="nav-header">Data Pengguna</li>
-      <li class="nav-item">
-        <a href="{{ route('level.index') }}" class="nav-link {{ $activeMenu == 'level' ? 'active' : '' }}">
-          <i class="nav-icon fas fa-layer-group"></i>
-          <p>Level User</p>
-        </a>
-      </li>
-      <li class="nav-item">
-        <a href="{{ route('user.index') }}" class="nav-link {{ $activeMenu == 'user' ? 'active' : '' }}">
-          <i class="nav-icon far fa-user"></i>
-          <p>Data User</p>
-        </a>
-      </li>
+
+      @php
+      $role = auth()->user()->level_id;
+      @endphp
+      
+      @if ($role == 1))
+        <li class="nav-header">Data Pengguna</li>
+        <li class="nav-item">
+          <a href="{{ route('level.index') }}" class="nav-link {{ $activeMenu == 'level' ? 'active' : '' }}">
+            <i class="nav-icon fas fa-layer-group"></i>
+            <p>Level User</p>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="{{ route('user.index') }}" class="nav-link {{ $activeMenu == 'user' ? 'active' : '' }}">
+            <i class="nav-icon far fa-user"></i>
+            <p>Data User</p>
+          </a>
+        </li>
+      @endif
+
       <li class="nav-header">Data Barang</li>
       <li class="nav-item">
         <a href="{{ route('kategori.index') }}" class="nav-link {{ $activeMenu == 'kategori' ? 'active' : '' }}">
@@ -59,12 +67,15 @@
           <p>Data Barang</p>
         </a>
       </li>
-      <li class="nav-item">
-        <a href="{{ route('supplier.index') }}" class="nav-link {{ $activeMenu == 'supplier' ? 'active' : '' }}">
-          <i class="nav-icon fas fa-truck"></i>
-          <p>Data Supplier</p>
-        </a>
-      </li>
+
+      @if ($role != 3)
+        <li class="nav-item">
+          <a href="{{ route('supplier.index') }}" class="nav-link {{ $activeMenu == 'supplier' ? 'active' : '' }}">
+            <i class="nav-icon fas fa-truck"></i>
+            <p>Data Supplier</p>
+          </a>
+        </li>
+      @endif
     </ul>
   </nav>
 

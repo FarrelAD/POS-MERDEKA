@@ -27,6 +27,7 @@ Route::middleware(['auth'])
     
     // User
     Route::prefix('user')
+        ->middleware(['authorize:ADM'])
         ->controller(UserController::class)
         ->group( function () {
         Route::get('/', 'index')->name('user.index');
@@ -50,7 +51,7 @@ Route::middleware(['auth'])
     
     // Level
     Route::prefix('level')
-        ->middleware(['authorize:ADM,MNG'])
+        ->middleware(['authorize:ADM'])
         ->controller(LevelController::class)
         ->group(function () {
         Route::get('/', 'index')->name('level.index');
@@ -71,6 +72,7 @@ Route::middleware(['auth'])
     
     // Kategori
     Route::prefix( 'kategori')
+        ->middleware(['authorize:ADM,MNG,STF'])
         ->controller(KategoriController::class)
         ->group(function () {
         Route::get('/', 'index')->name('kategori.index');
@@ -91,6 +93,7 @@ Route::middleware(['auth'])
     
     // Barang
     Route::prefix('barang')
+        ->middleware(['authorize:ADM,MNG,STF'])
         ->controller(BarangController::class)
         ->group( function () {
         Route::get('/', 'index')->name('barang.index');
@@ -117,6 +120,7 @@ Route::middleware(['auth'])
     
     // Supplier
     Route::prefix( 'supplier')
+        ->middleware(['authorize:ADM,MNG'])
         ->controller(SupplierController::class)
         ->group( function () {
         Route::get('/', 'index')->name('supplier.index');
