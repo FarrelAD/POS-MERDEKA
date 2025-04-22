@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\RegisterController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BarangController;
 use App\Http\Controllers\KategoriController;

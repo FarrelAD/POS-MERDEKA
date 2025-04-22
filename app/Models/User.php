@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
-use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Tymon\JWTAuth\Contracts\JWTSubject;
 
-class User extends Model implements Authenticatable
+class User extends Authenticatable implements JWTSubject
 {
     use HasFactory;
     use \Illuminate\Auth\Authenticatable;
@@ -22,6 +23,16 @@ class User extends Model implements Authenticatable
     ];
     protected $hidden = ['password'];
     protected $casts = ['password' => 'hashed'];
+
+    public function getJWTIdentifier() 
+    {
+        return $this->getKey();
+    }
+
+    public function getJWTCustomClaims()
+    {
+        return [];
+    }
 
     public function level(): BelongsTo
     {
