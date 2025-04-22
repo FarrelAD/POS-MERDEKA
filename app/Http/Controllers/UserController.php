@@ -273,7 +273,7 @@ class UserController extends Controller
     {
         return view('user.profile', [
             'breadcrumb' => (object) [
-                'title' => 'Profile',
+                'title' => 'Profil',
                 'list' => ['Home', 'Profile']
             ],
             'page' => (object) [
