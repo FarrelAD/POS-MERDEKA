@@ -2,10 +2,10 @@
   <!-- Sidebar user panel (optional) -->
   <div class="user-panel mt-3 pb-3 mb-3 d-flex">
     <div class="image">
-      <img src="{{ asset('adminlte/dist/img/user2-160x160.jpg') }}" class="img-circle elevation-2" alt="User Image">
+      <img src="{{ asset((auth()->user()->photo_profile == null) ? 'storage/unknown-profile-pict.jpg' : 'storage/img/' .auth()->user()->photo_profile) }}" class="img-circle elevation-2" alt="User Image">
     </div>
     <div class="info">
-      <a href="#" class="d-block">{{ auth()->user()->nama }}</a>
+      <a href="{{ route('user.profile.show') }}" class="d-block">{{ auth()->user()->nama }}</a>
     </div>
   </div>
 

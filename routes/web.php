@@ -42,6 +42,9 @@ Route::middleware(['auth'])
         Route::delete('/{id}', 'destroy')->name('user.destroy');
         Route::get('/{id}/delete-ajax', 'confirmDeleteAjax')->name('user.confirm-delete-ajax');
         Route::delete('/{id}/delete-ajax', 'deleteAjax')->name('user.delete-ajax');
+
+        Route::get('/profile', 'showUserProfile')->name('user.profile.show');
+        Route::patch('/profile/update-photo-profile', 'updateUserPhotoProfile')->name('user.profile.update-photo-profile');
     });
     
     // Level

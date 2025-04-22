@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\LevelModel;
 use App\Models\User;
 use Illuminate\Database\QueryException;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -32,7 +33,8 @@ class UserController extends Controller
         $users = User::select('user_id', 'username', 'nama', 'level_id')
             ->with('level');
 
-        if ($req->level_id) {
+        
+            if ($req->level_id) {
             $users->where('level_id', $req->level_id);
         }
 
@@ -264,6 +266,42 @@ class UserController extends Controller
         $user->delete();
         return response()->json([
             'message' => 'Data berhasil dihapus!'
+        ], Response::HTTP_OK);
+    }
+
+    public function showUserProfile()
+    {
+        return view('user.profile', [
+            'breadcrumb' => (object) [
+                'title' => 'Profile',
+                'list' => ['Home', 'Profile']
+            ],
+            'page' => (object) [
+                'title' => 'Profile'
+            ],
+            'user' => auth()->user(),
+            'activeMenu' => 'profile'
+        ]);
+    }
+
+    public function updateUserPhotoProfile(Request $req)
+    {
+        if (!$req->hasFile('photo') && !$req->file('photo')->isValid()) {
+            return response()->json([
+                "message" => "Image file is invalid"
+            ], Response::HTTP_BAD_REQUEST);
+        }
+
+        $img = $req->file('photo');
+        $path = $img->store('public/img');
+        $filename = basename($path);
+
+        $user = Auth::user();
+        $user->photo_profile = $filename;
+        $user->save();
+
+        return response()->json([
+            "message" => "Successfully update user photo profile",
         ], Response::HTTP_OK);
     }
 }
