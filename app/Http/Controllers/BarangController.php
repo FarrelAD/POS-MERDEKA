@@ -280,12 +280,12 @@ class BarangController extends Controller
         ], Response::HTTP_OK);
     }
 
-    public function import()
+    public function showImportModal()
     {
-        return view('barang.import');
+        return view('barang.import-excel');
     }
 
-    public function importData(Request $req)
+    public function importDataExcel(Request $req)
     {
         if (!$req->ajax() && !$req->wantsJson()) {
             return redirect('/');

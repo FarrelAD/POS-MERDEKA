@@ -5,7 +5,15 @@
         <div class="card-header">
             <h3 class="card-title">{{ $page->title }}</h3>
             <div class="card-tools">
-                <a href="{{ url('user/create') }}" class="btn btn-sm btn-primary mt-1">Tambah</a>
+                <button onclick="modalAction('{{ route('user.import.excel') }}')" class="btn btn-info">Import Pengguna</button>
+                <a href="{{ route('user.export.excel') }}" class="btn btn-sm btn-primary mt-1">
+                    <i class="fa fa-file-excel"></i> Export Pengguna Excel
+                </a>
+
+                <a href="{{ route('user.export.pdf') }}" class="btn btn-warning">
+                    <i class="fa fa-fa-file-pdf"></i> Export Barang PDF
+                </a>
+                <!-- <a href="{{ url('user/create') }}" class="btn btn-sm btn-primary mt-1">Tambah</a> -->
                 <button onclick="modalAction('{{ route('user.create-ajax') }}')" class="btn btn-sm btn-success mt-1">Tambah Ajax</button>
             </div>
         </div>

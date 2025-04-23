@@ -1,10 +1,10 @@
-<form action="{{ route('barang.import.post') }}" method="post" id="form-import" enctype="multipart/form-data">
+<form action="{{ route('user.import.excel.post') }}" method="post" id="form-import" enctype="multipart/form-data">
     @csrf
 
     <div id="modal-master" class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="modalLabel">Import Data Barang</h5>
+                <h5 class="modal-title" id="modalLabel">Import Data Pengguna</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -13,7 +13,7 @@
             <div class="modal-body">
                 <div class="form-group">
                     <label>Download Template</label>
-                    <a href="{{ asset('template_barang.xlsx') }}" class="btn btn-info btn-sm">
+                    <a href="{{ asset('template_data_pengguna.xlsx') }}" class="btn btn-info btn-sm">
                         <i class="fa fa-file-excel"></i>
                         Download
                     </a>
@@ -22,8 +22,8 @@
 
                 <div class="form-group">
                     <label>Pilih File</label>
-                    <input type="file" name="file_barng" id="file_barang" class="form-control" required>
-                    <small id="error-file-barang" class="error-text form-text text-danger"></small>
+                    <input type="file" name="file_user" id="file_user" class="form-control" required>
+                    <small id="error-file-user" class="error-text form-text text-danger"></small>
                 </div>
             </div>
 
@@ -39,7 +39,7 @@
     $(document).ready(function() {
         $('#form-import').validate({
             rules: {
-                file_barang: {
+                file_user: {
                     required: true,
                     extension: "xlsx"
                 }

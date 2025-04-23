@@ -5,7 +5,7 @@
         <div class="card-header">
             <h3 class="card-title">{{ $page->title }}</h3>
             <div class="card-tools">
-                <button onclick="modalAction('{{ route('barang.import') }}')" class="btn btn-info">Import Barang</button>
+                <button onclick="modalAction('{{ route('barang.import.excel') }}')" class="btn btn-info">Import Barang</button>
                 <a href="{{ route('barang.export.excel') }}" class="btn btn-sm btn-primary mt-1">
                     <i class="fa fa-file-excel"></i> Export Barang Excel
                 </a>

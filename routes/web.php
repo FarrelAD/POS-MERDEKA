@@ -47,6 +47,12 @@ Route::middleware(['auth'])
 
         Route::get('/profile', 'showUserProfile')->name('user.profile.show');
         Route::patch('/profile/update-photo-profile', 'updateUserPhotoProfile')->name('user.profile.update-photo-profile');
+
+        Route::get('/import/excel', 'showImportModal')->name('user.import.excel');
+        Route::post('/import/excel', 'importDataExcel')->name('user.import.excel.post');
+
+        Route::get('/export/excel', 'exportExcel')->name('user.export.excel');
+        Route::get('/export/pdf', 'exportPdf')->name('user.export.pdf');
     });
     
     // Level
@@ -111,8 +117,8 @@ Route::middleware(['auth'])
         Route::get('/{id}/delete-ajax', 'confirmDeleteAjax')->name('barang.confirm-delete-ajax');
         Route::delete('/{id}/delete-ajax', 'deleteAjax')->name('barang.delete-ajax');
 
-        Route::get('/import/excel', 'import')->name('barang.import');
-        Route::post('/import/excel', 'importData')->name('barang.import.post');
+        Route::get('/import/excel', 'showImportModal')->name('barang.import.excel');
+        Route::post('/import/excel', 'importDataExcel')->name('barang.import.excel.post');
 
         Route::get('/export/excel', 'exportExcel')->name('barang.export.excel');
         Route::get('/export/pdf', 'exportPdf')->name('barang.export.pdf');
