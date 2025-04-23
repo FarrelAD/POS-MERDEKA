@@ -21,6 +21,14 @@ Route::controller(AuthController::class)->group(function () {
     Route::post('signup', 'postSignup')->name('signup.post');
 });
 
+Route::middleware(['authorize:ADM,MNG,STF,KAMM,SPR'])
+    ->controller(UserController::class)
+    ->prefix('profile')
+    ->group(function () {
+        Route::get('/', 'showUserProfile')->name('user.profile.show');
+        Route::patch('/update-photo-profile', 'updateUserPhotoProfile')->name('user.profile.update-photo-profile');
+});
+
 Route::middleware(['auth'])
 ->group(function () {
     Route::get('/', [WelcomeController::class, 'index']);
@@ -44,9 +52,6 @@ Route::middleware(['auth'])
         Route::delete('/{id}', 'destroy')->name('user.destroy');
         Route::get('/{id}/delete-ajax', 'confirmDeleteAjax')->name('user.confirm-delete-ajax');
         Route::delete('/{id}/delete-ajax', 'deleteAjax')->name('user.delete-ajax');
-
-        Route::get('/profile', 'showUserProfile')->name('user.profile.show');
-        Route::patch('/profile/update-photo-profile', 'updateUserPhotoProfile')->name('user.profile.update-photo-profile');
 
         Route::get('/import/excel', 'showImportModal')->name('user.import.excel');
         Route::post('/import/excel', 'importDataExcel')->name('user.import.excel.post');
