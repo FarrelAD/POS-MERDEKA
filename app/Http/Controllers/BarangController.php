@@ -324,9 +324,9 @@ class BarangController extends Controller
         foreach ($data as $row => $val) {
             if ($row > 1) {
                 $insert[] = [
-                    'barang_kode' => $val['A'],
-                    'barang_nama' => $val['B'],
-                    'kategori_id' => $val['C'],
+                    'kategori_id' => $val['A'],
+                    'barang_kode' => $val['B'],
+                    'barang_nama' => $val['C'],
                     'supplier_id' => $val['D'],
                     'harga_beli' => $val['E'],
                     'harga_jual' => $val['F'],
