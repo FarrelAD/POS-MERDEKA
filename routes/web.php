@@ -74,6 +74,12 @@ Route::middleware(['auth'])
         Route::delete('/{id}', 'destroy')->name('level.destroy');
         Route::get('/{id}/delete-ajax', 'confirmDeleteAjax')->name('level.confirm-delete-ajax');
         Route::delete('/{id}/delete-ajax', 'deleteAjax')->name('level.delete-ajax');
+
+        Route::get('/import/excel', 'showImportModal')->name('level.import.excel');
+        Route::post('/import/excel', 'importDataExcel')->name('level.import.excel.post');
+
+        Route::get('/export/excel', 'exportExcel')->name('level.export.excel');
+        Route::get('/export/pdf', 'exportPdf')->name('level.export.pdf');
     });
     
     // Kategori
@@ -95,6 +101,12 @@ Route::middleware(['auth'])
         Route::delete('/{id}', 'destroy')->name('kategori.destroy');
         Route::get('/{id}/delete-ajax', 'confirmDeleteAjax')->name('kategori.confirm-delete-ajax');
         Route::delete('/{id}/delete-ajax', 'deleteAjax')->name('kategori.delete-ajax');
+
+        Route::get('/import/excel', 'showImportModal')->name('kategori.import.excel');
+        Route::post('/import/excel', 'importDataExcel')->name('kategori.import.excel.post');
+
+        Route::get('/export/excel', 'exportExcel')->name('kategori.export.excel');
+        Route::get('/export/pdf', 'exportPdf')->name('kategori.export.pdf');
     });
     
     // Barang
@@ -143,5 +155,11 @@ Route::middleware(['auth'])
         Route::delete('/{id}', 'destroy')->name('supplier.destroy');
         Route::get('/{id}/delete-ajax', 'confirmDeleteAjax')->name('supplier.confirm-delete-ajax');
         Route::delete('/{id}/delete-ajax', 'deleteAjax')->name('supplier.delete-ajax');
+
+        Route::get('/import/excel', 'showImportModal')->name('supplier.import.excel');
+        Route::post('/import/excel', 'importDataExcel')->name('supplier.import.excel.post');
+
+        Route::get('/export/excel', 'exportExcel')->name('supplier.export.excel');
+        Route::get('/export/pdf', 'exportPdf')->name('supplier.export.pdf');
     });
 });

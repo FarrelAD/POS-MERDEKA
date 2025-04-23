@@ -5,7 +5,15 @@
         <div class="card-header">
             <h3 class="card-title">{{ $page->title }}</h3>
             <div class="card-tools">
-                <a href="{{ route('supplier.create') }}" class="btn btn-sm btn-primary mt-1">Tambah</a>
+                <button onclick="modalAction('{{ route('supplier.import.excel') }}')" class="btn btn-info">Import Supplier</button>
+                <a href="{{ route('supplier.export.excel') }}" class="btn btn-sm btn-primary mt-1">
+                    <i class="fa fa-file-excel"></i> Export Supplier Excel
+                </a>
+
+                <a href="{{ route('supplier.export.pdf') }}" class="btn btn-warning">
+                    <i class="fa fa-fa-file-pdf"></i> Export Supplier PDF
+                </a>
+                <!-- <a href="{{ route('supplier.create') }}" class="btn btn-sm btn-primary mt-1">Tambah</a> -->
                 <button onclick="modalAction('{{ route('supplier.create-ajax') }}')" class="btn btn-sm btn-success mt-1">Tambah Ajax</button>
             </div>
         </div>
