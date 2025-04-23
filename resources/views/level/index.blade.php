@@ -5,7 +5,15 @@
         <div class="card-header">
             <h3 class="card-title">{{ $page->title }}</h3>
             <div class="card-tools">
-                <a href="{{ route('level.create') }}" class="btn btn-sm btn-primary mt-1">Tambah</a>
+                <button onclick="modalAction('{{ route('level.import.excel') }}')" class="btn btn-info">Import Level</button>
+                <a href="{{ route('level.export.excel') }}" class="btn btn-sm btn-primary mt-1">
+                    <i class="fa fa-file-excel"></i> Export Level Excel
+                </a>
+
+                <a href="{{ route('level.export.pdf') }}" class="btn btn-warning">
+                    <i class="fa fa-fa-file-pdf"></i> Export Level PDF
+                </a>
+                <!-- <a href="{{ route('level.create') }}" class="btn btn-sm btn-primary mt-1">Tambah</a> -->
                 <button onclick="modalAction('{{ route('level.create-ajax') }}')" class="btn btn-sm btn-success mt-1">Tambah Ajax</button>
             </div>
         </div>
