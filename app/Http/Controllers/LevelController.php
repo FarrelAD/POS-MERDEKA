@@ -3,9 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\LevelModel;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Validator;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use Symfony\Component\HttpFoundation\Response;
 use Yajra\DataTables\Facades\DataTables;
 class LevelController extends Controller
@@ -245,5 +248,129 @@ class LevelController extends Controller
         return response()->json([
             'message' => 'Data berhasil dihapus!'
         ], Response::HTTP_OK);
+    }
+
+    public function showImportModal()
+    {
+        return view('level.import-excel');
+    }
+
+    public function importDataExcel(Request $req)
+    {
+        if (!$req->ajax() && !$req->wantsJson()) {
+            return redirect('/');
+        }
+
+        $rules = [
+            'file_level' => ['required', 'mimes:xlsx', 'max:1024']
+        ];
+
+        $validator = Validator::make($req->all(), $rules);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => 'Validasi gagal',
+                'msgField' => $validator->errors()
+            ], Response::HTTP_BAD_REQUEST);
+        }
+
+        $file = $req->file('file_level');
+
+        $reader = IOFactory::createReader('Xlsx');
+        $reader->setReadDataOnly(true);
+        $spreadsheet = $reader->load($file->getRealPath());
+        $sheet = $spreadsheet->getActiveSheet();
+
+        $data = $sheet->toArray(null, false, true, true);
+
+        $insert = [];
+        if (count($data) <= 1) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Tidak ada data yang diimport'
+            ], Response::HTTP_BAD_REQUEST);
+        }
+
+        foreach ($data as $row => $val) {
+            if ($row > 1) {
+                $insert[] = [
+                    'level_kode' => $val['A'],
+                    'level_name' => $val['B'],
+                    'created_at' => now(),
+                    'updated_at' => now()
+                ];
+            }
+        }
+
+        if (count($insert) > 0) {
+            LevelModel::insertOrIgnore($insert);
+        }
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Data berhasil diimport'
+        ], Response::HTTP_OK);
+    }
+
+    public function exportExcel()
+    {
+        $level = LevelModel::select('level_kode', 'level_name')
+            ->orderBy('level_kode')
+            ->get();
+
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+
+        $sheet->setCellValue('A1', 'No')
+            ->setCellValue('B1', 'Level Kode')
+            ->setCellValue('C1', 'Level Nama');
+        
+        $sheet->getStyle('A1:D1')->getFont()->setBold(true);
+
+        $no = 1;
+        $row = 2;
+
+        foreach ($level as $key => $value) {
+            $sheet->setCellValue('A' . $row, $no++)
+                ->setCellValue('B' . $row, $value->level_kode)
+                ->setCellValue('C' . $row, $value->level_name);
+            $row++;
+        }
+        
+        foreach (range('A', 'C') as $columnID) {
+            $sheet->getColumnDimension($columnID)->setAutoSize(true);
+        }
+
+        $sheet->setTitle('Data Level');
+        $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
+        $filename = 'Data Level ' . date('Y-m-d H-i-s') . '.xlsx';
+
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment; filename="' . $filename . '"');
+        header('Cache-Control: max-age=0');
+        header('Cache-Control: max-age=1');
+        header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');
+        header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT');
+        header('Cache-Control: cache, must-revalidate');
+        header('Pragma: public');
+
+        $writer->save('php://output');
+        exit;
+    }
+
+    public function exportPdf()
+    {
+        $level = LevelModel::select('level_kode', 'level_name')
+            ->orderBy('level_kode')
+            ->get();
+
+        $pdf = Pdf::loadView('level.export-pdf', [ 'level' => $level ])
+                ->setPaper('A4', 'landscape')
+                ->setOption('isRemoteEnabled', true)
+                ->setOption('isHtml5ParserEnabled', true);
+        
+        $pdf->render();
+
+        return $pdf->stream('Data Supplier ' . date('Y-m-d H-i-s') . '.pdf');
     }
 }
