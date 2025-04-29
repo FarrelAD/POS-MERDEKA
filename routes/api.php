@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\KategoriController;
 use App\Http\Controllers\Api\LevelController;
 use App\Http\Controllers\Api\LoginController;
 use App\Http\Controllers\Api\LogoutController;
@@ -36,4 +37,14 @@ Route::prefix('user')
     Route::get('/{user}', 'show');
     Route::put('/{user}', 'update');
     Route::delete('/{user}', 'destroy');
+});
+
+Route::prefix('kategori')
+    ->controller(KategoriController::class)
+    ->group(function () {
+    Route::get('/', 'index');
+    Route::post('/', 'store');
+    Route::get('/{kategori}', 'show');
+    Route::put('/{kategori}', 'update');
+    Route::delete('/{kategori}', 'destroy');
 });
